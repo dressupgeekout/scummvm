@@ -30,6 +30,10 @@
 #include "engines/util.h"
 #include "graphics/palette.h"
 
+#include "common/file.h"
+
+#include "rockett/clu.h"
+
 namespace Rockett {
 
 RockettEngine *g_engine;
@@ -63,6 +67,16 @@ Common::Error RockettEngine::run() {
 	int saveSlot = ConfMan.getInt("save_slot");
 	if (saveSlot != -1)
 		(void)loadGameState(saveSlot);
+
+	// CHARLOTTE VALIDATION
+	Common::File *fp = new Common::File;
+	if (fp->open("600-!Title.CLU")) {
+		CLU *clu = new CLU;
+		clu->readFromStream(fp);
+		clu->dump();
+		delete clu;
+	}
+	fp->close();
 
 	// Draw a series of boxes on screen as a sample
 	for (int i = 0; i < 100; ++i)

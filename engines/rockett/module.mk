@@ -1,6 +1,7 @@
 MODULE := engines/rockett
 
 MODULE_OBJS = \
+	clu.o \
 	rockett.o \
 	console.o \
 	metaengine.o
