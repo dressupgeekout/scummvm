@@ -35,7 +35,7 @@ const ADGameDescription gameDescriptions[] = {
 		nullptr,
 		AD_ENTRY1s("TITLE.PRD", "a91e86f48d50dd08753a90cf16d2ed87", 552),
 		Common::EN_ANY,
-		Common::kPlatformDOS,
+		Common::kPlatformWindows,
 		ADGF_UNSTABLE,
 		GUIO1(GUIO_NONE)
 	},
@@ -44,7 +44,7 @@ const ADGameDescription gameDescriptions[] = {
 		nullptr,
 		AD_ENTRY1s("Title.PRX", "ea56d44ed1d7ae37c1518167c6ac2f30", 1320704),
 		Common::EN_ANY,
-		Common::kPlatformDOS,
+		Common::kPlatformWindows,
 		ADGF_UNSTABLE,
 		GUIO1(GUIO_NONE)
 	},
@@ -53,7 +53,7 @@ const ADGameDescription gameDescriptions[] = {
 		nullptr,
 		AD_ENTRY1s("TITLE.PRX", "324c5946149505beacd4f564330363f9", 1549765),
 		Common::EN_ANY,
-		Common::kPlatformDOS,
+		Common::kPlatformWindows,
 		ADGF_UNSTABLE,
 		GUIO1(GUIO_NONE)
 	},
@@ -62,7 +62,7 @@ const ADGameDescription gameDescriptions[] = {
 		nullptr,
 		AD_ENTRY1s("TITLE.PRX", "eb0f2b24d4c16b76142cd4615716fce7", 2524847),
 		Common::EN_ANY,
-		Common::kPlatformDOS,
+		Common::kPlatformWindows,
 		ADGF_UNSTABLE,
 		GUIO1(GUIO_NONE)
 	},
