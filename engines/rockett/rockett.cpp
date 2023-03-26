@@ -104,6 +104,40 @@ Common::Error RockettEngine::run() {
 		delete prx2;
 	}
 
+	if (Common::String(_gameDescription->gameId) == Common::String("rockett_newschool")) {
+		PresageArchive *archive1 = new PresageArchive("TITLE.PRD", "TITLE.PRS");
+		archive1->read();
+
+		Common::ArchiveMemberList list1;
+		archive1->listMembers(list1);
+		debug(2, "(PRDPRS) TITLE.PR{D,S} has %d members", archive1->nEntries());
+
+		for (Common::ArchiveMemberList::const_iterator i = list1.begin(); i != list1.end(); i++) {
+			PresageArchiveMember *member = (PresageArchiveMember*)i->get();
+			debug(2, "(PRDPRDS) ARCHIVE MEMBER %s.%s",
+				member->getName().c_str(),
+				member->getFiletype().c_str());
+		}
+
+		delete archive1;
+
+		PresageArchive *archive2 = new PresageArchive("IDL/Arro.PRD", "IDL/Arro.PRS");
+		archive2->read();
+
+		Common::ArchiveMemberList list2;
+		archive2->listMembers(list2);
+		debug(2, "(PRDPRS) IDL/Arro.PR{D,S} has %d members", archive2->nEntries());
+
+		for (Common::ArchiveMemberList::const_iterator i = list2.begin(); i != list2.end(); i++) {
+			PresageArchiveMember *member = (PresageArchiveMember*)i->get();
+			debug(2, "(PRDPRDS) ARCHIVE MEMBER %s.%s",
+				member->getName().c_str(),
+				member->getFiletype().c_str());
+		}
+
+		delete archive2;
+	}
+
 	// ====================
 
 	// Draw a series of boxes on screen as a sample
