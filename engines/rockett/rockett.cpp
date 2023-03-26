@@ -100,6 +100,20 @@ Common::Error RockettEngine::run() {
 		}
 
 		delete prx2;
+
+		// Confirm we can instantiate a CLU from _within_ a PRX
+		PresageArchive *prx3 = new PresageArchive("Title.PRX");
+		prx3->read();
+
+		CLU *titleClu = new CLU;
+		if (prx3->hasFile("!Title.CLU")) {
+			titleClu->readFromStream(prx3->createReadStreamForMember("!Title.CLU"));
+			delete prx3;
+			titleClu->dump();
+			delete titleClu;
+		} else {
+			debug(2, "This PRX has no such !Title.CLU");
+		}
 	}
 
 	if (Common::String(_gameDescription->gameId) == Common::String("rockett_newschool")) {

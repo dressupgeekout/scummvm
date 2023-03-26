@@ -20,9 +20,11 @@
  */
 
 #include "common/archive.h"
+#include "common/debug.h"
 #include "common/file.h"
 #include "common/path.h"
 #include "common/stream.h"
+#include "common/substream.h"
 
 #include "rockett/presage_archive.h"
 
@@ -161,7 +163,7 @@ uint16 PresageArchive::nEntries()
 	return _nEntries;
 }
 
-uint32 PresageArchive::absoluteOffsetForMemberAtIndex(int index) {
+uint32 PresageArchive::absoluteOffsetForMemberAtIndex(int index) const {
 	uint32 offset;
 
 	switch (_kind) {
@@ -170,6 +172,22 @@ uint32 PresageArchive::absoluteOffsetForMemberAtIndex(int index) {
 		break;
 	case PRESAGE_ARCHIVE_KIND_PRX:
 		offset = _dataOffsetStart + _members[index]->_offset;
+		break;
+	}
+
+	return offset;
+}
+
+uint32 PresageArchive::absoluteOffsetForMember(const PresageArchiveMemberPtr member) const
+{
+	uint32 offset;
+
+	switch (_kind) {
+	case PRESAGE_ARCHIVE_KIND_PRDPRS:
+		offset = member->_offset;
+		break;
+	case PRESAGE_ARCHIVE_KIND_PRX:
+		offset = _dataOffsetStart + member->getOffset();
 		break;
 	}
 
@@ -217,11 +235,26 @@ const Common::ArchiveMemberPtr PresageArchive::getMember(const Common::Path &pat
 }
 
 // Common::Archive API
+//
+// XXX somewhat redundant with ::getMember()
 Common::SeekableReadStream *PresageArchive::createReadStreamForMember(const Common::Path &path) const {
 	if (!this->hasFile(path))
 		return nullptr;
 
-	return nullptr;
+	PresageArchiveMemberPtr member = nullptr;
+
+	for (int i = 0; i < _nEntries; i++) {
+		if (_members[i]->getName() == path.toString()) {
+			member = _members[i];
+			break;
+		}
+	}
+
+	Common::Path which = (_kind == PRESAGE_ARCHIVE_KIND_PRDPRS ? _path2 : _path1);
+	Common::File *fp = new Common::File();
+	fp->open(which);
+	uint32 realOffset = this->absoluteOffsetForMember(member);
+	return new Common::SeekableSubReadStream(fp, realOffset, realOffset+member->getSize(), DisposeAfterUse::YES);
 }
 
 } // End of namespace Rockett

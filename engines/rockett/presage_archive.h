@@ -55,7 +55,9 @@ public:
 	Common::SeekableReadStream *createReadStreamForMember(const Common::Path &path) const override;
 
 private:
-	uint32 absoluteOffsetForMemberAtIndex(int index);
+	typedef Common::SharedPtr<PresageArchiveMember> PresageArchiveMemberPtr;
+	uint32 absoluteOffsetForMemberAtIndex(int index) const;
+	uint32 absoluteOffsetForMember(const PresageArchiveMemberPtr member) const;
 
 	Common::Path _path1; // Only file (PRX) - OR - header-file (PRD/PRS)
 	Common::Path _path2; // Only file (PRX) - OR - data-file (PRD/PRS)
@@ -65,7 +67,6 @@ private:
 	uint16 _nEntries;
 	uint32 _dataOffsetStart;
 
-	typedef Common::SharedPtr<PresageArchiveMember> PresageArchiveMemberPtr;
 	Common::Array<PresageArchiveMemberPtr> _members;
 };
 
