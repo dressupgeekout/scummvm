@@ -33,6 +33,7 @@
 #include "common/file.h"
 
 #include "rockett/clu.h"
+#include "rockett/presage_archive.h"
 
 namespace Rockett {
 
@@ -68,6 +69,8 @@ Common::Error RockettEngine::run() {
 	if (saveSlot != -1)
 		(void)loadGameState(saveSlot);
 
+	// ====================
+
 	// CHARLOTTE VALIDATION
 	Common::File *fp = new Common::File;
 	if (fp->open("600-!Title.CLU")) {
@@ -77,6 +80,30 @@ Common::Error RockettEngine::run() {
 		delete clu;
 	}
 	fp->close();
+
+	// CHARLOTTE VALIDATION
+	PresageArchive *prx = new PresageArchive("Title.PRX");
+	prx->read();
+	debug(2, "Title.PRX has %d members", prx->nEntries());
+	delete prx;
+
+	PresageArchive *prx2 = new PresageArchive("IDL/Whit.PRX");
+	prx2->read();
+	debug(2, "IDL/Whit.PRX has %d members", prx2->nEntries());
+
+	Common::ArchiveMemberList list;
+	prx2->listMembers(list);
+
+	for (Common::ArchiveMemberList::const_iterator i = list.begin(); i != list.end(); i++) {
+		PresageArchiveMember *member = (PresageArchiveMember*)i->get();
+		debug(2, "ARCHIVE MEMBER %s.%s",
+			member->getName().c_str(),
+			member->getFiletype().c_str());
+	}
+
+	delete prx2;
+
+	// ====================
 
 	// Draw a series of boxes on screen as a sample
 	for (int i = 0; i < 100; ++i)
