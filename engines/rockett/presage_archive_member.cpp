@@ -81,17 +81,17 @@ uint32 PresageArchiveMember::getSize() const {
 
 // Common::ArchiveMember API
 Common::SeekableReadStream *PresageArchiveMember::createReadStream() const {
-	return _parent->createReadStreamForMember(Common::Path(_name));
+	return _parent->createReadStreamForMember(Common::Path(this->getName()));
 }
 
 // Common::ArchiveMember API
 Common::String PresageArchiveMember::getName() const {
-	return _name;
+	return _name + "." + _filetype;
 }
 
 // Common::ArchiveMember API
 Common::U32String PresageArchiveMember::getDisplayName() const {
-	return Common::U32String(_name);
+	return Common::U32String(this->getName());
 }
 
 } // End of namespace Rockett

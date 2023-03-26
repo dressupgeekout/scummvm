@@ -96,9 +96,7 @@ Common::Error RockettEngine::run() {
 
 		for (Common::ArchiveMemberList::const_iterator i = list.begin(); i != list.end(); i++) {
 			PresageArchiveMember *member = (PresageArchiveMember*)i->get();
-			debug(2, "ARCHIVE MEMBER %s.%s",
-				member->getName().c_str(),
-				member->getFiletype().c_str());
+			debug(2, "ARCHIVE MEMBER %s", member->getName().c_str());
 		}
 
 		delete prx2;
@@ -114,9 +112,7 @@ Common::Error RockettEngine::run() {
 
 		for (Common::ArchiveMemberList::const_iterator i = list1.begin(); i != list1.end(); i++) {
 			PresageArchiveMember *member = (PresageArchiveMember*)i->get();
-			debug(2, "(PRDPRDS) ARCHIVE MEMBER %s.%s",
-				member->getName().c_str(),
-				member->getFiletype().c_str());
+			debug(2, "(PRDPRDS) ARCHIVE MEMBER %s", member->getName().c_str());
 		}
 
 		delete archive1;
@@ -130,9 +126,7 @@ Common::Error RockettEngine::run() {
 
 		for (Common::ArchiveMemberList::const_iterator i = list2.begin(); i != list2.end(); i++) {
 			PresageArchiveMember *member = (PresageArchiveMember*)i->get();
-			debug(2, "(PRDPRDS) ARCHIVE MEMBER %s.%s",
-				member->getName().c_str(),
-				member->getFiletype().c_str());
+			debug(2, "(PRDPRDS) ARCHIVE MEMBER %s", member->getName().c_str());
 		}
 
 		delete archive2;
