@@ -29,6 +29,9 @@
 #include "common/system.h"
 #include "engines/util.h"
 #include "graphics/palette.h"
+#include "audio/decoders/aiff.h"
+#include "audio/audiostream.h"
+#include "audio/mixer.h"
 
 #include "common/file.h"
 
@@ -114,6 +117,20 @@ Common::Error RockettEngine::run() {
 		} else {
 			debug(2, "This PRX has no such !Title.CLU");
 		}
+
+		// Attempt to loop the Hall Loop
+		PresageArchive *idnav = new PresageArchive("IDNav.PRX");
+		idnav->read();
+		if (idnav->hasFile("hallLoop_t7.Aif")) {
+			Common::SeekableReadStream *hallLoop = idnav->createReadStreamForMember("hallLoop_t7.Aif");
+			Audio::RewindableAudioStream *hallLoopAiff = Audio::makeAIFFStream(hallLoop, DisposeAfterUse::YES);
+			Audio::LoopingAudioStream *loopingStream = new Audio::LoopingAudioStream(hallLoopAiff, 0, DisposeAfterUse::YES);
+			Audio::SoundHandle *handle = new Audio::SoundHandle();
+			debug(2, "Playing hallLoop_t7.Aif");
+			g_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, handle, loopingStream);
+		}
+
+		delete idnav;
 	}
 
 	if (Common::String(_gameDescription->gameId) == Common::String("rockett_newschool")) {
