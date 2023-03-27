@@ -60,8 +60,7 @@ Common::String RockettEngine::getGameId() const {
 }
 
 Common::Error RockettEngine::run() {
-	// Initialize 320x200 paletted graphics mode
-	initGraphics(320, 200);
+	initGraphics(640, 480);
 	_screen = new Graphics::Screen();
 
 	// Set the engine's debugger console
@@ -74,22 +73,14 @@ Common::Error RockettEngine::run() {
 
 	// ====================
 
-	// CHARLOTTE VALIDATION
 	if (Common::String(_gameDescription->gameId) == Common::String("rockett_tricky")) {
-		Common::File *fp = new Common::File;
-		if (fp->open("600-!Title.CLU")) {
-			CLU *clu = new CLU;
-			clu->readFromStream(fp);
-			clu->dump();
-			delete clu;
-		}
-		fp->close();
-
+		// Confirm we can read a PRX in the top directory
 		PresageArchive *prx = new PresageArchive("Title.PRX");
 		prx->read();
 		debug(2, "Title.PRX has %d members", prx->nEntries());
 		delete prx;
 
+		// Confirm we can read a PRX in a subdirectory
 		PresageArchive *prx2 = new PresageArchive("IDL/Whit.PRX");
 		prx2->read();
 		debug(2, "IDL/Whit.PRX has %d members", prx2->nEntries());
@@ -104,7 +95,7 @@ Common::Error RockettEngine::run() {
 
 		delete prx2;
 
-		// Confirm we can instantiate a CLU from _within_ a PRX
+		// Confirm we can instantiate a CLU from within a PRX
 		PresageArchive *prx3 = new PresageArchive("Title.PRX");
 		prx3->read();
 
@@ -134,6 +125,7 @@ Common::Error RockettEngine::run() {
 	}
 
 	if (Common::String(_gameDescription->gameId) == Common::String("rockett_newschool")) {
+		// Confirm we can extract a PRD/PRS pair at the top directory
 		PresageArchive *archive1 = new PresageArchive("TITLE.PRD", "TITLE.PRS");
 		archive1->read();
 
@@ -148,6 +140,7 @@ Common::Error RockettEngine::run() {
 
 		delete archive1;
 
+		// Confirm we can extract a PRD/PRS pair in a subdirectory
 		PresageArchive *archive2 = new PresageArchive("IDL/Arro.PRD", "IDL/Arro.PRS");
 		archive2->read();
 
@@ -165,26 +158,12 @@ Common::Error RockettEngine::run() {
 
 	// ====================
 
-	// Draw a series of boxes on screen as a sample
-	for (int i = 0; i < 100; ++i)
-		_screen->frameRect(Common::Rect(i, i, 320 - i, 200 - i), i);
-	_screen->update();
-
 	// Simple event handling loop
-	byte pal[256 * 3] = { 0 };
 	Common::Event e;
-	int offset = 0;
 
 	while (!shouldQuit()) {
 		while (g_system->getEventManager()->pollEvent(e)) {
 		}
-
-		// Cycle through a simple palette
-		++offset;
-		for (int i = 0; i < 256; ++i)
-			pal[i * 3 + 1] = (i + offset) % 256;
-		g_system->getPaletteManager()->setPalette(pal, 0, 256);
-		_screen->update();
 
 		// Delay for a bit. All events loops should have a delay
 		// to prevent the system being unduly loaded
