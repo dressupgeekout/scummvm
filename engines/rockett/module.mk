@@ -7,6 +7,7 @@ MODULE_OBJS = \
 	metaengine.o \
 	presage_archive.o \
 	presage_archive_member.o \
+	tableau.o \
 	xpk.o \
 	xpk_decoder.o
 
