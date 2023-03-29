@@ -77,7 +77,7 @@ Common::Error RockettEngine::run() {
 	// ROCKETT'S NEW SCHOOL: Load the "Housekeeping" main menu and play the
 	// background sound
 	//
-	if (Common::String(_gameDescription->gameId) == Common::String("rockett_newschool")) {
+	if (getGameId() == Common::String("rockett_newschool")) {
 		PresageArchive *globalArchive = new PresageArchive("GLOBAL.PRD", "GLOBAL.PRS");
 		globalArchive->read();
 
@@ -116,7 +116,7 @@ Common::Error RockettEngine::run() {
 	// ROCKETT'S TRICKY DECISION: Load the Hidden Hallway -- Play the 'Hall
 	// Loop' music and load the starting location graphic
 	//
-	if (Common::String(_gameDescription->gameId) == Common::String("rockett_tricky")) {
+	if (getGameId() == Common::String("rockett_tricky")) {
 		PresageArchive *idnav = new PresageArchive("IDNav.PRX");
 		idnav->read();
 
@@ -159,7 +159,7 @@ Common::Error RockettEngine::run() {
 	// ROCKETT'S SECRET INVITATION: Load the "Housekeeping" main menu and play
 	// the background sound
 	//
-	if (Common::String(_gameDescription->gameId) == Common::String("rockett_secret")) {
+	if (getGameId() == Common::String("rockett_secret")) {
 		PresageArchive *globalArchive = new PresageArchive("GLOBAL.PRX");
 		globalArchive->read();
 
