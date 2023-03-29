@@ -22,6 +22,7 @@
 #ifndef ROCKETT_XPK_H
 #define ROCKETT_XPK_H
 
+#include "common/array.h"
 #include "common/stream.h"
 #include "graphics/surface.h"
 
