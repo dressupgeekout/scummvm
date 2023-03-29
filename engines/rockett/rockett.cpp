@@ -91,12 +91,12 @@ Common::Error RockettEngine::run() {
 			warning("couldn't find expected file HKEEP.CLU");
 		}
 
+		Tableau *tableau = new Tableau();
+
 		if (globalArchive->hasFile("house_01.XPK")) {
 			XPK *xpk = new XPK();
 			xpk->readFromStream(globalArchive->createReadStreamForMember("house_01.XPK"));
-			Graphics::Surface *bgSurface = xpk->decodeTiledMode();
-			_screen->blitFrom(bgSurface);
-			_screen->update();
+			tableau->addBackgroundImage(xpk);
 		} else {
 			warning("couldn't find expected file house_01.XPK");
 		}
@@ -104,10 +104,7 @@ Common::Error RockettEngine::run() {
 		if (globalArchive->hasFile("House_amb.AIF")) {
 			Common::SeekableReadStream *houseAmbient = globalArchive->createReadStreamForMember("House_amb.AIF");
 			Audio::RewindableAudioStream *houseAmbientAiff = Audio::makeAIFFStream(houseAmbient, DisposeAfterUse::YES);
-			Audio::LoopingAudioStream *loopingStream = new Audio::LoopingAudioStream(houseAmbientAiff, 0, DisposeAfterUse::YES);
-			Audio::SoundHandle *handle = new Audio::SoundHandle();
-			debug(2, "Playing House_amb.AIF");
-			g_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, handle, loopingStream);
+			tableau->addSoundLoop(houseAmbientAiff);
 		}
 
 		delete globalArchive;
@@ -171,12 +168,12 @@ Common::Error RockettEngine::run() {
 			return Common::kPathDoesNotExist;
 		}
 
+		Tableau *tableau = new Tableau();
+
 		if (globalArchive->hasFile("house_01.XPK")) {
 			XPK *xpk = new XPK();
 			xpk->readFromStream(globalArchive->createReadStreamForMember("house_01.XPK"));
-			Graphics::Surface *bgSurface = xpk->decodeTiledMode();
-			_screen->blitFrom(bgSurface);
-			_screen->update();
+			tableau->addBackgroundImage(xpk);
 		} else {
 			warning("couldn't find expected file house_01.XPK");
 			return Common::kPathDoesNotExist;
@@ -190,10 +187,7 @@ Common::Error RockettEngine::run() {
 		if (ambientArchive->hasFile("HOUSEKEEPING_AM.Aif")) {
 			Common::SeekableReadStream *housekeeping = ambientArchive->createReadStreamForMember("HOUSEKEEPING_AM.Aif");
 			Audio::RewindableAudioStream *housekeepingAiff = Audio::makeAIFFStream(housekeeping, DisposeAfterUse::YES);
-			Audio::LoopingAudioStream *loopingStream = new Audio::LoopingAudioStream(housekeepingAiff, 0, DisposeAfterUse::YES);
-			Audio::SoundHandle *handle = new Audio::SoundHandle();
-			debug(2, "Playing HOUSEKEEPING_AM.Aif");
-			g_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, handle, loopingStream);
+			tableau->addSoundLoop(housekeepingAiff);
 		} else {
 			warning("couldn't find expected file HOUSEKEEPING_AM.Aif");
 			return Common::kPathDoesNotExist;
