@@ -37,7 +37,7 @@ const ADGameDescription gameDescriptions[] = {
 		Common::EN_ANY,
 		Common::kPlatformWindows,
 		ADGF_UNSTABLE,
-		GUIO1(GUIO_NONE)
+		GUIO4(GUIO_NOSUBTITLES, GUIO_NOMIDI, GUIO_RENDERVGA, GUIO_NOLANG)
 	},
 	{
 		"rockett_tricky",
@@ -46,7 +46,7 @@ const ADGameDescription gameDescriptions[] = {
 		Common::EN_ANY,
 		Common::kPlatformWindows,
 		ADGF_UNSTABLE,
-		GUIO1(GUIO_NONE)
+		GUIO4(GUIO_NOSUBTITLES, GUIO_NOMIDI, GUIO_RENDERVGA, GUIO_NOLANG)
 	},
 	{
 		"rockett_secret",
@@ -55,7 +55,7 @@ const ADGameDescription gameDescriptions[] = {
 		Common::EN_ANY,
 		Common::kPlatformWindows,
 		ADGF_UNSTABLE,
-		GUIO1(GUIO_NONE)
+		GUIO4(GUIO_NOSUBTITLES, GUIO_NOMIDI, GUIO_RENDERVGA, GUIO_NOLANG)
 	},
 	{
 		"rockett_dance",
@@ -64,7 +64,7 @@ const ADGameDescription gameDescriptions[] = {
 		Common::EN_ANY,
 		Common::kPlatformWindows,
 		ADGF_UNSTABLE,
-		GUIO1(GUIO_NONE)
+		GUIO4(GUIO_NOSUBTITLES, GUIO_NOMIDI, GUIO_RENDERVGA, GUIO_NOLANG)
 	},
 	AD_TABLE_END_MARKER
 };
