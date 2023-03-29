@@ -37,20 +37,21 @@ public:
 	Tableau();
 	~Tableau();
 
-	void addBackgroundImage(const Common::String &filename);
+	void addBackgroundImage(XPK *xpk);
 
 	// A pair of XPKs, one xor the other is shown depending on the mouse
 	// position.
 	//
 	// XXX need to come up with a callback somehow
-	void addHighlightable(const Common::String &normal, const Common::String &highlighted);
+	void addHighlightable(XPK *normal, XPK *highlighted);
 	void addHighlightableByID(uint32 normal, uint32 highlighted);
 
-	void addSoundLoop(const Common::String &filename);
+	void addSoundLoop(Audio::RewindableAudioStream *stream);
 
 private:
 	Graphics::Surface *_bgSurface;
 	Audio::LoopingAudioStream *_loopingStream;
+	Audio::SoundHandle *_loopingHandle;
 };
 
 } // End of namespace Rockett

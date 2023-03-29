@@ -19,8 +19,12 @@
  *
  */
 
+#include "common/system.h"
 #include "graphics/surface.h"
+#include "audio/audiostream.h"
+#include "audio/mixer.h"
 
+#include "rockett/rockett.h"
 #include "rockett/tableau.h"
 
 namespace Rockett {
@@ -28,22 +32,29 @@ namespace Rockett {
 Tableau::Tableau() {
 	_bgSurface = nullptr;
 	_loopingStream = nullptr;
+	_loopingHandle = nullptr;
 }
 
 Tableau::~Tableau() {
-	// OK
+	_bgSurface->free();
 }
 
-void Tableau::addBackgroundImage(const Common::String &filename) {
+void Tableau::addBackgroundImage(XPK *xpk) {
+	_bgSurface = xpk->decodeTiledMode();
+	g_engine->_screen->blitFrom(_bgSurface);
+	g_engine->_screen->update();
 }
 
-void Tableau::addHighlightable(const Common::String &normal, const Common::String &highlighted) {
+void Tableau::addHighlightable(XPK *normal, XPK *highlighted) {
 }
 
 void Tableau::addHighlightableByID(uint32 normal, uint32 highlighted) {
 }
 
-void Tableau::addSoundLoop(const Common::String &filename) {
+void Tableau::addSoundLoop(Audio::RewindableAudioStream *stream) {
+	_loopingStream = new Audio::LoopingAudioStream(stream, 0, DisposeAfterUse::YES);
+	_loopingHandle = new Audio::SoundHandle();
+	g_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, _loopingHandle, _loopingStream);
 }
 	
 } // End of namespace Rockett

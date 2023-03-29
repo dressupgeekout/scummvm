@@ -38,6 +38,7 @@
 
 #include "rockett/clu.h"
 #include "rockett/presage_archive.h"
+#include "rockett/tableau.h"
 #include "rockett/xpk.h"
 
 namespace Rockett {
@@ -117,18 +118,6 @@ Common::Error RockettEngine::run() {
 	// Loop' music and load the starting location graphic
 	//
 	if (getGameId() == Common::String("rockett_tricky")) {
-		PresageArchive *idnav = new PresageArchive("IDNav.PRX");
-		idnav->read();
-
-		if (idnav->hasFile("hallLoop_t7.Aif")) {
-			Common::SeekableReadStream *hallLoop = idnav->createReadStreamForMember("hallLoop_t7.Aif");
-			Audio::RewindableAudioStream *hallLoopAiff = Audio::makeAIFFStream(hallLoop, DisposeAfterUse::YES);
-			Audio::LoopingAudioStream *loopingStream = new Audio::LoopingAudioStream(hallLoopAiff, 0, DisposeAfterUse::YES);
-			Audio::SoundHandle *handle = new Audio::SoundHandle();
-			debug(2, "Playing hallLoop_t7.Aif");
-			g_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, handle, loopingStream);
-		}
-
 		PresageArchive *idglobal = new PresageArchive("IDGlobal.PRX");
 		idglobal->read();
 
@@ -140,15 +129,24 @@ Common::Error RockettEngine::run() {
 			delete navClu;
 		}
 
+		PresageArchive *idnav = new PresageArchive("IDNav.PRX");
+		idnav->read();
+
+		Tableau *tableau = new Tableau();
+
 		XPK *xpk = new XPK();
 		if (idnav->hasFile("AN.XPK")) {
 			debug(2, "reading AN.XPK");
 			xpk->readFromStream(idnav->createReadStreamForMember("AN.XPK"));
-			Graphics::Surface *surf = xpk->decodeTiledMode();
-			_screen->blitFrom(surf);
-			_screen->update();
+			tableau->addBackgroundImage(xpk);
 		} else {
 			debug(2, "No such file 'AN.XPK'");
+		}
+
+		if (idnav->hasFile("hallLoop_t7.Aif")) {
+			Common::SeekableReadStream *hallLoop = idnav->createReadStreamForMember("hallLoop_t7.Aif");
+			Audio::RewindableAudioStream *hallLoopAiff = Audio::makeAIFFStream(hallLoop, DisposeAfterUse::YES);
+			tableau->addSoundLoop(hallLoopAiff);
 		}
 
 		delete idnav;
