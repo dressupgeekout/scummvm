@@ -74,6 +74,45 @@ Common::Error RockettEngine::run() {
 		(void)loadGameState(saveSlot);
 
 	//
+	// ROCKETT'S NEW SCHOOL: Load the "Housekeeping" main menu and play the
+	// background sound
+	//
+	if (Common::String(_gameDescription->gameId) == Common::String("rockett_newschool")) {
+		PresageArchive *globalArchive = new PresageArchive("GLOBAL.PRD", "GLOBAL.PRS");
+		globalArchive->read();
+
+		if (globalArchive->hasFile("HKEEP.CLU")) {
+			CLU *clu = new CLU();
+			clu->readFromStream(globalArchive->createReadStreamForMember("HKEEP.CLU"));
+			g_system->getPaletteManager()->setPalette(clu->toPalette(), 0, 256);
+			delete clu;
+		} else {
+			warning("couldn't find expected file HKEEP.CLU");
+		}
+
+		if (globalArchive->hasFile("house_01.XPK")) {
+			XPK *xpk = new XPK();
+			xpk->readFromStream(globalArchive->createReadStreamForMember("house_01.XPK"));
+			Graphics::Surface *bgSurface = xpk->decodeTiledMode();
+			_screen->blitFrom(bgSurface);
+			_screen->update();
+		} else {
+			warning("couldn't find expected file house_01.XPK");
+		}
+
+		if (globalArchive->hasFile("House_amb.AIF")) {
+			Common::SeekableReadStream *houseAmbient = globalArchive->createReadStreamForMember("House_amb.AIF");
+			Audio::RewindableAudioStream *houseAmbientAiff = Audio::makeAIFFStream(houseAmbient, DisposeAfterUse::YES);
+			Audio::LoopingAudioStream *loopingStream = new Audio::LoopingAudioStream(houseAmbientAiff, 0, DisposeAfterUse::YES);
+			Audio::SoundHandle *handle = new Audio::SoundHandle();
+			debug(2, "Playing House_amb.AIF");
+			g_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, handle, loopingStream);
+		}
+
+		delete globalArchive;
+	}
+
+	//
 	// ROCKETT'S TRICKY DECISION: Load the Hidden Hallway -- Play the 'Hall
 	// Loop' music and load the starting location graphic
 	//
