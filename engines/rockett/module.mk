@@ -6,7 +6,9 @@ MODULE_OBJS = \
 	console.o \
 	metaengine.o \
 	presage_archive.o \
-	presage_archive_member.o
+	presage_archive_member.o \
+	xpk.o \
+	xpk_decoder.o
 
 # This module can be built as a plugin
 ifeq ($(ENABLE_ROCKETT), DYNAMIC_PLUGIN)

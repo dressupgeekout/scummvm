@@ -35,6 +35,7 @@ public:
 
 	bool readFromStream(Common::SeekableReadStream *stream);
 	byte *colorAtIndex(byte index);
+	byte *toPalette();
 	void dump();
 
 private:

@@ -29,6 +29,7 @@
 #include "common/system.h"
 #include "engines/util.h"
 #include "graphics/palette.h"
+#include "graphics/surface.h"
 #include "audio/decoders/aiff.h"
 #include "audio/audiostream.h"
 #include "audio/mixer.h"
@@ -37,6 +38,7 @@
 
 #include "rockett/clu.h"
 #include "rockett/presage_archive.h"
+#include "rockett/xpk.h"
 
 namespace Rockett {
 
@@ -71,47 +73,14 @@ Common::Error RockettEngine::run() {
 	if (saveSlot != -1)
 		(void)loadGameState(saveSlot);
 
-	// ====================
-
+	//
+	// ROCKETT'S TRICKY DECISION: Load the Hidden Hallway -- Play the 'Hall
+	// Loop' music and load the starting location graphic
+	//
 	if (Common::String(_gameDescription->gameId) == Common::String("rockett_tricky")) {
-		// Confirm we can read a PRX in the top directory
-		PresageArchive *prx = new PresageArchive("Title.PRX");
-		prx->read();
-		debug(2, "Title.PRX has %d members", prx->nEntries());
-		delete prx;
-
-		// Confirm we can read a PRX in a subdirectory
-		PresageArchive *prx2 = new PresageArchive("IDL/Whit.PRX");
-		prx2->read();
-		debug(2, "IDL/Whit.PRX has %d members", prx2->nEntries());
-
-		Common::ArchiveMemberList list;
-		prx2->listMembers(list);
-
-		for (Common::ArchiveMemberList::const_iterator i = list.begin(); i != list.end(); i++) {
-			PresageArchiveMember *member = (PresageArchiveMember*)i->get();
-			debug(2, "ARCHIVE MEMBER %s", member->getName().c_str());
-		}
-
-		delete prx2;
-
-		// Confirm we can instantiate a CLU from within a PRX
-		PresageArchive *prx3 = new PresageArchive("Title.PRX");
-		prx3->read();
-
-		CLU *titleClu = new CLU;
-		if (prx3->hasFile("!Title.CLU")) {
-			titleClu->readFromStream(prx3->createReadStreamForMember("!Title.CLU"));
-			delete prx3;
-			titleClu->dump();
-			delete titleClu;
-		} else {
-			debug(2, "This PRX has no such !Title.CLU");
-		}
-
-		// Attempt to loop the Hall Loop
 		PresageArchive *idnav = new PresageArchive("IDNav.PRX");
 		idnav->read();
+
 		if (idnav->hasFile("hallLoop_t7.Aif")) {
 			Common::SeekableReadStream *hallLoop = idnav->createReadStreamForMember("hallLoop_t7.Aif");
 			Audio::RewindableAudioStream *hallLoopAiff = Audio::makeAIFFStream(hallLoop, DisposeAfterUse::YES);
@@ -121,42 +90,31 @@ Common::Error RockettEngine::run() {
 			g_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, handle, loopingStream);
 		}
 
+		PresageArchive *idglobal = new PresageArchive("IDGlobal.PRX");
+		idglobal->read();
+
+		CLU *navClu = new CLU;
+		if (idglobal->hasFile("IDPalette.CLU")) {
+			navClu->readFromStream(idglobal->createReadStreamForMember("IDPalette.CLU"));
+			debug(2, "setting palette to IDPalette.CLU");
+			g_system->getPaletteManager()->setPalette(navClu->toPalette(), 0, 256);
+			delete navClu;
+		}
+
+		XPK *xpk = new XPK();
+		if (idnav->hasFile("AN.XPK")) {
+			debug(2, "reading AN.XPK");
+			xpk->readFromStream(idnav->createReadStreamForMember("AN.XPK"));
+			Graphics::Surface *surf = xpk->decodeTiledMode();
+			_screen->blitFrom(surf);
+			_screen->update();
+		} else {
+			debug(2, "No such file 'AN.XPK'");
+		}
+
 		delete idnav;
+		delete idglobal;
 	}
-
-	if (Common::String(_gameDescription->gameId) == Common::String("rockett_newschool")) {
-		// Confirm we can extract a PRD/PRS pair at the top directory
-		PresageArchive *archive1 = new PresageArchive("TITLE.PRD", "TITLE.PRS");
-		archive1->read();
-
-		Common::ArchiveMemberList list1;
-		archive1->listMembers(list1);
-		debug(2, "(PRDPRS) TITLE.PR{D,S} has %d members", archive1->nEntries());
-
-		for (Common::ArchiveMemberList::const_iterator i = list1.begin(); i != list1.end(); i++) {
-			PresageArchiveMember *member = (PresageArchiveMember*)i->get();
-			debug(2, "(PRDPRDS) ARCHIVE MEMBER %s", member->getName().c_str());
-		}
-
-		delete archive1;
-
-		// Confirm we can extract a PRD/PRS pair in a subdirectory
-		PresageArchive *archive2 = new PresageArchive("IDL/Arro.PRD", "IDL/Arro.PRS");
-		archive2->read();
-
-		Common::ArchiveMemberList list2;
-		archive2->listMembers(list2);
-		debug(2, "(PRDPRS) IDL/Arro.PR{D,S} has %d members", archive2->nEntries());
-
-		for (Common::ArchiveMemberList::const_iterator i = list2.begin(); i != list2.end(); i++) {
-			PresageArchiveMember *member = (PresageArchiveMember*)i->get();
-			debug(2, "(PRDPRDS) ARCHIVE MEMBER %s", member->getName().c_str());
-		}
-
-		delete archive2;
-	}
-
-	// ====================
 
 	// Simple event handling loop
 	Common::Event e;

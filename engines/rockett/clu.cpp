@@ -68,6 +68,24 @@ byte *CLU::colorAtIndex(byte index) {
 	return _array[index];
 }
 
+// Returns a byte array that would be suitable for the PaletteManager. You need
+// to free the result.
+byte *CLU::toPalette() {
+	byte *palette = (byte *)calloc(256*3, 1);
+	byte *palettePtr = palette;
+
+	for (int i = 0; i < 256; i++) {
+		*palettePtr = _array[i][0];
+		palettePtr++;
+		*palettePtr = _array[i][1];
+		palettePtr++;
+		*palettePtr = _array[i][2];
+		palettePtr++;
+	}
+
+	return palette;
+}
+
 void CLU::dump() {
 	for (int i = 0; i < kCluMaxElements; i++) {
 		debug(2, "<%d,%d,%d>", _array[i][0], _array[i][1], _array[i][2]);
