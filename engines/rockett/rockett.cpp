@@ -155,6 +155,55 @@ Common::Error RockettEngine::run() {
 		delete idglobal;
 	}
 
+	//
+	// ROCKETT'S SECRET INVITATION: Load the "Housekeeping" main menu and play
+	// the background sound
+	//
+	if (Common::String(_gameDescription->gameId) == Common::String("rockett_secret")) {
+		PresageArchive *globalArchive = new PresageArchive("GLOBAL.PRX");
+		globalArchive->read();
+
+		if (globalArchive->hasFile("Housekeeping.CLU")) {
+			CLU *clu = new CLU();
+			clu->readFromStream(globalArchive->createReadStreamForMember("Housekeeping.CLU"));
+			g_system->getPaletteManager()->setPalette(clu->toPalette(), 0, 256);
+			delete clu;
+		} else {
+			warning("couldn't find expected file Housekeeping.CLU");
+			return Common::kPathDoesNotExist;
+		}
+
+		if (globalArchive->hasFile("house_01.XPK")) {
+			XPK *xpk = new XPK();
+			xpk->readFromStream(globalArchive->createReadStreamForMember("house_01.XPK"));
+			Graphics::Surface *bgSurface = xpk->decodeTiledMode();
+			_screen->blitFrom(bgSurface);
+			_screen->update();
+		} else {
+			warning("couldn't find expected file house_01.XPK");
+			return Common::kPathDoesNotExist;
+		}
+
+		delete globalArchive;
+
+		PresageArchive *ambientArchive = new PresageArchive("AMBIENT.PRX");
+		ambientArchive->read();
+
+		if (ambientArchive->hasFile("HOUSEKEEPING_AM.Aif")) {
+			Common::SeekableReadStream *housekeeping = ambientArchive->createReadStreamForMember("HOUSEKEEPING_AM.Aif");
+			Audio::RewindableAudioStream *housekeepingAiff = Audio::makeAIFFStream(housekeeping, DisposeAfterUse::YES);
+			Audio::LoopingAudioStream *loopingStream = new Audio::LoopingAudioStream(housekeepingAiff, 0, DisposeAfterUse::YES);
+			Audio::SoundHandle *handle = new Audio::SoundHandle();
+			debug(2, "Playing HOUSEKEEPING_AM.Aif");
+			g_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, handle, loopingStream);
+		} else {
+			warning("couldn't find expected file HOUSEKEEPING_AM.Aif");
+			return Common::kPathDoesNotExist;
+		}
+
+		delete ambientArchive;
+	}
+
 	// Simple event handling loop
 	Common::Event e;
 
