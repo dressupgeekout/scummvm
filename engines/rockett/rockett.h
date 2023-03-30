@@ -34,6 +34,7 @@
 #include "engines/savestate.h"
 #include "graphics/screen.h"
 
+#include "rockett/clu.h"
 #include "rockett/detection.h"
 #include "rockett/tableau.h"
 
@@ -100,6 +101,7 @@ public:
 	}
 
 	void useTableau(Tableau *tableau);
+	void useCLU(CLU *clu);
 };
 
 extern RockettEngine *g_engine;

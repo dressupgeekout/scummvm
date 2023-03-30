@@ -85,7 +85,7 @@ Common::Error RockettEngine::run() {
 		if (globalArchive->hasFile("HKEEP.CLU")) {
 			CLU *clu = new CLU();
 			clu->readFromStream(globalArchive->createReadStreamForMember("HKEEP.CLU"));
-			g_system->getPaletteManager()->setPalette(clu->toPalette(), 0, 256);
+			useCLU(clu);
 			delete clu;
 		} else {
 			warning("couldn't find expected file HKEEP.CLU");
@@ -121,8 +121,7 @@ Common::Error RockettEngine::run() {
 		CLU *navClu = new CLU;
 		if (idglobal->hasFile("IDPalette.CLU")) {
 			navClu->readFromStream(idglobal->createReadStreamForMember("IDPalette.CLU"));
-			debug(2, "setting palette to IDPalette.CLU");
-			g_system->getPaletteManager()->setPalette(navClu->toPalette(), 0, 256);
+			useCLU(navClu);
 			delete navClu;
 		}
 
@@ -161,7 +160,7 @@ Common::Error RockettEngine::run() {
 		if (globalArchive->hasFile("Housekeeping.CLU")) {
 			CLU *clu = new CLU();
 			clu->readFromStream(globalArchive->createReadStreamForMember("Housekeeping.CLU"));
-			g_system->getPaletteManager()->setPalette(clu->toPalette(), 0, 256);
+			useCLU(clu);
 			delete clu;
 		} else {
 			warning("couldn't find expected file Housekeeping.CLU");
@@ -226,5 +225,8 @@ void RockettEngine::useTableau(Tableau *tableau) {
 	_tableau = tableau;
 }
 
+void RockettEngine::useCLU(CLU *clu) {
+	g_system->getPaletteManager()->setPalette(clu->toPalette(), 0, 256);
+}
 
 } // End of namespace Rockett
