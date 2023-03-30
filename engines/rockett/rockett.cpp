@@ -139,6 +139,64 @@ Common::Error RockettEngine::run() {
 	// ROCKETT'S SECRET INVITATION: Load the "Housekeeping" main menu and play
 	// the background sound
 	//
+
+	if (getGameId() == Common::String("rockett_secret")) {
+		Tableau *tableau = new Tableau();
+
+		CLU *clu = requestCLUByName("CHOICE4.PRX", nullptr, "MOOD4_PAL.CLU");
+		if (clu) {
+			useCLU(clu);
+			delete clu;
+		} else {
+			return Common::kPathDoesNotExist;
+		}
+
+		XPK *background = requestXPKByName("CHOICE4.PRX", nullptr, "SCENE_4_1_BG.XPK");
+		if (background) {
+			tableau->addBackgroundImage(background);
+		} else {
+			return Common::kPathDoesNotExist;
+		}
+
+		XPK *rockettCenter = requestXPKByName("CHOICE4.PRX", nullptr, "CENTER_HEAD.XPK");
+		Graphics::Surface *surf = rockettCenter->decodeEntry(0);
+		XPKEntry *entry = rockettCenter->_entries[0];
+		_screen->transBlitFrom(surf, Common::Point(entry->getX(), entry->getY()));
+
+		XPK *balloon1 = requestXPKByName("CHOICE4.PRX", nullptr, "LEFT_BALLOON.XPK");
+		Graphics::Surface *balloon1Surf = balloon1->decodeEntry(0);
+		XPKEntry *balloon1Entry = balloon1->_entries[0];
+		_screen->transBlitFrom(balloon1Surf, Common::Point(balloon1Entry->getX(), balloon1Entry->getY()));
+
+		XPK *balloon2 = requestXPKByName("CHOICE4.PRX", nullptr, "CENTER_BALLOON.XPK");
+		Graphics::Surface *balloon2Surf = balloon2->decodeEntry(0);
+		XPKEntry *balloon2Entry = balloon2->_entries[0];
+		_screen->transBlitFrom(balloon2Surf, Common::Point(balloon2Entry->getX(), balloon2Entry->getY()));
+
+		XPK *balloon3 = requestXPKByName("CHOICE4.PRX", nullptr, "RIGHT_BALLOON.XPK");
+		Graphics::Surface *balloon3Surf = balloon3->decodeEntry(0);
+		XPKEntry *balloon3Entry = balloon3->_entries[0];
+		_screen->transBlitFrom(balloon3Surf, Common::Point(balloon3Entry->getX(), balloon3Entry->getY()));
+
+		XPK *face1 = requestXPKByName("CHOICE4.PRX", nullptr, "4_1_HOPEFUL.XPK");
+		Graphics::Surface *surf2 = face1->decodeEntry(0);
+		XPKEntry *entry2 = face1->_entries[0];
+		_screen->transBlitFrom(surf2, Common::Point(entry2->getX(), entry2->getY()));
+
+		XPK *face2 = requestXPKByName("CHOICE4.PRX", nullptr, "4_1_TIMID.XPK");
+		Graphics::Surface *surf3 = face2->decodeEntry(0);
+		XPKEntry *entry3 = face2->_entries[0];
+		_screen->transBlitFrom(surf3, Common::Point(entry3->getX(), entry3->getY()));
+
+		XPK *face3 = requestXPKByName("CHOICE4.PRX", nullptr, "4_1_POSITIVE.XPK");
+		Graphics::Surface *surf4 = face3->decodeEntry(0);
+		XPKEntry *entry4 = face3->_entries[0];
+		_screen->transBlitFrom(surf4, Common::Point(entry4->getX(), entry4->getY()));
+
+		_screen->update();
+	}
+
+#if 0
 	if (getGameId() == Common::String("rockett_secret")) {
 		Tableau *tableau = new Tableau();
 
@@ -164,6 +222,7 @@ Common::Error RockettEngine::run() {
 			return Common::kPathDoesNotExist;
 		}
 	}
+#endif
 
 	// Simple event handling loop
 	Common::Event e;
