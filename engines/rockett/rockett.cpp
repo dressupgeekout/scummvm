@@ -159,7 +159,7 @@ Common::Error RockettEngine::run() {
 
 		Audio::RewindableAudioStream *aiff = requestAIFByName("AMBIENT.PRX", nullptr, "HOUSEKEEPING_AM.Aif");
 		if (aiff) {
-			tableau->addSoundLoop(housekeepingAiff);
+			tableau->addSoundLoop(aiff);
 		} else {
 			return Common::kPathDoesNotExist;
 		}
@@ -263,7 +263,7 @@ void RockettEngine::useCLU(CLU *clu) {
 }
 
 void RockettEngine::useTableau(Tableau *tableau) {
-	_tableau = tableau;
+	_currentTableau = tableau;
 }
 
 } // End of namespace Rockett

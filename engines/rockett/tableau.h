@@ -23,6 +23,7 @@
 #define ROCKETT_TABLEAU_H
 
 #include "audio/audiostream.h"
+#include "audio/mixer.h"
 #include "graphics/surface.h"
 
 #include "rockett/xpk.h"
