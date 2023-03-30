@@ -34,6 +34,7 @@
 #include "engines/savestate.h"
 #include "graphics/screen.h"
 
+#include "rockett/clu.h"
 #include "rockett/detection.h"
 
 namespace Rockett {
@@ -95,6 +96,8 @@ public:
 		Common::Serializer s(stream, nullptr);
 		return syncGame(s);
 	}
+
+	void useCLU(CLU *clu);
 };
 
 extern RockettEngine *g_engine;
