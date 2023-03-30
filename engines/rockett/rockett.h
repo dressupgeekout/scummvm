@@ -35,6 +35,7 @@
 #include "graphics/screen.h"
 
 #include "rockett/detection.h"
+#include "rockett/tableau.h"
 
 namespace Rockett {
 
@@ -44,6 +45,8 @@ class RockettEngine : public Engine {
 private:
 	const ADGameDescription *_gameDescription;
 	Common::RandomSource _randomSource;
+	Tableau *_currentTableau;
+
 protected:
 	// Engine APIs
 	Common::Error run() override;
@@ -95,6 +98,8 @@ public:
 		Common::Serializer s(stream, nullptr);
 		return syncGame(s);
 	}
+
+	void useTableau(Tableau *tableau);
 };
 
 extern RockettEngine *g_engine;

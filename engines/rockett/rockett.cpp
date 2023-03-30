@@ -222,4 +222,9 @@ Common::Error RockettEngine::syncGame(Common::Serializer &s) {
 	return Common::kNoError;
 }
 
+void RockettEngine::useTableau(Tableau *tableau) {
+	_tableau = tableau;
+}
+
+
 } // End of namespace Rockett
