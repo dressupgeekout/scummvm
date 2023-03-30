@@ -33,10 +33,12 @@
 #include "engines/engine.h"
 #include "engines/savestate.h"
 #include "graphics/screen.h"
+#include "audio/audiostream.h"
 
 #include "rockett/clu.h"
 #include "rockett/detection.h"
 #include "rockett/tableau.h"
+#include "rockett/xpk.h"
 
 namespace Rockett {
 
@@ -100,8 +102,12 @@ public:
 		return syncGame(s);
 	}
 
-	void useTableau(Tableau *tableau);
+	CLU *requestCLUByName(const char *archiveName1, const char *archiveName2, const char *cluName);
+	XPK *requestXPKByName(const char *archiveName1, const char *archiveName2, const char *xpkName);
+	Audio::RewindableAudioStream *requestAIFByName(const char *archiveName1, const char *archiveName2, const char *aifName);
+
 	void useCLU(CLU *clu);
+	void useTableau(Tableau *tableau);
 };
 
 extern RockettEngine *g_engine;

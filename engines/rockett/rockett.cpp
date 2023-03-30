@@ -79,35 +79,29 @@ Common::Error RockettEngine::run() {
 	// background sound
 	//
 	if (getGameId() == Common::String("rockett_newschool")) {
-		PresageArchive *globalArchive = new PresageArchive("GLOBAL.PRD", "GLOBAL.PRS");
-		globalArchive->read();
+		Tableau *tableau = new Tableau();
 
-		if (globalArchive->hasFile("HKEEP.CLU")) {
-			CLU *clu = new CLU();
-			clu->readFromStream(globalArchive->createReadStreamForMember("HKEEP.CLU"));
+		CLU *clu = requestCLUByName("GLOBAL.PRD", "GLOBAL.PRS", "HKEEP.CLU");
+		if (clu) {
 			useCLU(clu);
 			delete clu;
 		} else {
-			warning("couldn't find expected file HKEEP.CLU");
+			return Common::kPathDoesNotExist;
 		}
 
-		Tableau *tableau = new Tableau();
-
-		if (globalArchive->hasFile("house_01.XPK")) {
-			XPK *xpk = new XPK();
-			xpk->readFromStream(globalArchive->createReadStreamForMember("house_01.XPK"));
+		XPK *xpk = requestXPKByName("GLOBAL.PRD", "GLOBAL.PRS", "house_01.XPK");
+		if (xpk) {
 			tableau->addBackgroundImage(xpk);
 		} else {
-			warning("couldn't find expected file house_01.XPK");
+			return Common::kPathDoesNotExist;
 		}
 
-		if (globalArchive->hasFile("House_amb.AIF")) {
-			Common::SeekableReadStream *houseAmbient = globalArchive->createReadStreamForMember("House_amb.AIF");
-			Audio::RewindableAudioStream *houseAmbientAiff = Audio::makeAIFFStream(houseAmbient, DisposeAfterUse::YES);
-			tableau->addSoundLoop(houseAmbientAiff);
+		Audio::RewindableAudioStream *aiff = requestAIFByName("GLOBAL.PRD", "GLOBAL.PRS", "House_amb.AIF");
+		if (aiff) {
+			tableau->addSoundLoop(aiff);
+		} else {
+			return Common::kPathDoesNotExist;
 		}
-
-		delete globalArchive;
 	}
 
 	//
@@ -115,38 +109,30 @@ Common::Error RockettEngine::run() {
 	// Loop' music and load the starting location graphic
 	//
 	if (getGameId() == Common::String("rockett_tricky")) {
-		PresageArchive *idglobal = new PresageArchive("IDGlobal.PRX");
-		idglobal->read();
-
-		CLU *navClu = new CLU;
-		if (idglobal->hasFile("IDPalette.CLU")) {
-			navClu->readFromStream(idglobal->createReadStreamForMember("IDPalette.CLU"));
-			useCLU(navClu);
-			delete navClu;
-		}
-
-		PresageArchive *idnav = new PresageArchive("IDNav.PRX");
-		idnav->read();
-
 		Tableau *tableau = new Tableau();
 
-		XPK *xpk = new XPK();
-		if (idnav->hasFile("AN.XPK")) {
-			debug(2, "reading AN.XPK");
-			xpk->readFromStream(idnav->createReadStreamForMember("AN.XPK"));
+		CLU *clu = requestCLUByName("IDGlobal.PRX", nullptr, "IDPalette.CLU");
+		if (clu) {
+			useCLU(clu);
+			delete clu;
+		} else {
+			return Common::kPathDoesNotExist;
+		}
+
+		Audio::RewindableAudioStream *aiff = requestAIFByName("IDNav.PRX", nullptr, "hallLoop_t7.Aif");
+		if (aiff) {
+			tableau->addSoundLoop(aiff);
+		} else {
+			return Common::kPathDoesNotExist;
+		}
+
+
+		XPK *xpk = requestXPKByName("IDNav.PRX", nullptr, "AN.XPK");
+		if (xpk) {
 			tableau->addBackgroundImage(xpk);
 		} else {
-			debug(2, "No such file 'AN.XPK'");
+			return Common::kPathDoesNotExist;
 		}
-
-		if (idnav->hasFile("hallLoop_t7.Aif")) {
-			Common::SeekableReadStream *hallLoop = idnav->createReadStreamForMember("hallLoop_t7.Aif");
-			Audio::RewindableAudioStream *hallLoopAiff = Audio::makeAIFFStream(hallLoop, DisposeAfterUse::YES);
-			tableau->addSoundLoop(hallLoopAiff);
-		}
-
-		delete idnav;
-		delete idglobal;
 	}
 
 	//
@@ -154,45 +140,29 @@ Common::Error RockettEngine::run() {
 	// the background sound
 	//
 	if (getGameId() == Common::String("rockett_secret")) {
-		PresageArchive *globalArchive = new PresageArchive("GLOBAL.PRX");
-		globalArchive->read();
+		Tableau *tableau = new Tableau();
 
-		if (globalArchive->hasFile("Housekeeping.CLU")) {
-			CLU *clu = new CLU();
-			clu->readFromStream(globalArchive->createReadStreamForMember("Housekeeping.CLU"));
+		CLU *clu = requestCLUByName("GLOBAL.PRX", nullptr, "Housekeeping.CLU");
+		if (clu) {
 			useCLU(clu);
 			delete clu;
 		} else {
-			warning("couldn't find expected file Housekeeping.CLU");
 			return Common::kPathDoesNotExist;
 		}
 
-		Tableau *tableau = new Tableau();
-
-		if (globalArchive->hasFile("house_01.XPK")) {
-			XPK *xpk = new XPK();
-			xpk->readFromStream(globalArchive->createReadStreamForMember("house_01.XPK"));
+		XPK *xpk = requestXPKByName("GLOBAL.PRX", nullptr, "house_01.XPK");
+		if (xpk) {
 			tableau->addBackgroundImage(xpk);
 		} else {
-			warning("couldn't find expected file house_01.XPK");
 			return Common::kPathDoesNotExist;
 		}
 
-		delete globalArchive;
-
-		PresageArchive *ambientArchive = new PresageArchive("AMBIENT.PRX");
-		ambientArchive->read();
-
-		if (ambientArchive->hasFile("HOUSEKEEPING_AM.Aif")) {
-			Common::SeekableReadStream *housekeeping = ambientArchive->createReadStreamForMember("HOUSEKEEPING_AM.Aif");
-			Audio::RewindableAudioStream *housekeepingAiff = Audio::makeAIFFStream(housekeeping, DisposeAfterUse::YES);
+		Audio::RewindableAudioStream *aiff = requestAIFByName("AMBIENT.PRX", nullptr, "HOUSEKEEPING_AM.Aif");
+		if (aiff) {
 			tableau->addSoundLoop(housekeepingAiff);
 		} else {
-			warning("couldn't find expected file HOUSEKEEPING_AM.Aif");
 			return Common::kPathDoesNotExist;
 		}
-
-		delete ambientArchive;
 	}
 
 	// Simple event handling loop
@@ -221,12 +191,79 @@ Common::Error RockettEngine::syncGame(Common::Serializer &s) {
 	return Common::kNoError;
 }
 
-void RockettEngine::useTableau(Tableau *tableau) {
-	_tableau = tableau;
+
+CLU *RockettEngine::requestCLUByName(const char *archiveName1, const char *archiveName2, const char *cluName) {
+	debug(2, "Requesting CLU '%s' from archive '%s'", cluName, archiveName1);
+	PresageArchive *archive;
+
+	if (archiveName2) {
+		archive = new PresageArchive(archiveName1, archiveName2);
+	} else {
+		archive = new PresageArchive(archiveName1);
+	}
+	archive->read();
+
+	if (archive->hasFile(cluName)) {
+		CLU *clu = new CLU();
+		clu->readFromStream(archive->createReadStreamForMember(cluName));
+		delete archive;
+		return clu;
+	} else {
+		warning("Couldn't find expected file %s in archive %s", cluName, archiveName1);
+		return nullptr;
+	}
+}
+
+XPK *RockettEngine::requestXPKByName(const char *archiveName1, const char *archiveName2, const char *xpkName) {
+	debug(2, "Requesting XPK '%s' from archive '%s'", xpkName, archiveName1);
+	PresageArchive *archive;
+
+	if (archiveName2) {
+		archive = new PresageArchive(archiveName1, archiveName2);
+	} else {
+		archive = new PresageArchive(archiveName1);
+	}
+	archive->read();
+
+	if (archive->hasFile(xpkName)) {
+		XPK *xpk = new XPK();
+		xpk->readFromStream(archive->createReadStreamForMember(xpkName));
+		delete archive;
+		return xpk;
+	} else {
+		warning("Couldn't find expected file %s in archive %s", xpkName, archiveName1);
+		return nullptr;
+	}
+}
+
+Audio::RewindableAudioStream *RockettEngine::requestAIFByName(const char *archiveName1, const char *archiveName2, const char *aifName) {
+	debug(2, "Requesting AIF '%s' from archive '%s'", aifName, archiveName1);
+	PresageArchive *archive;
+
+	if (archiveName2) {
+		archive = new PresageArchive(archiveName1, archiveName2);
+	} else {
+		archive = new PresageArchive(archiveName1);
+	}
+	archive->read();
+
+	if (archive->hasFile(aifName)) {
+		Common::SeekableReadStream *stream = archive->createReadStreamForMember(aifName);
+		Audio::RewindableAudioStream *aiffStream = Audio::makeAIFFStream(stream, DisposeAfterUse::YES);
+		delete archive;
+		return aiffStream;
+	} else {
+		warning("Couldn't find expected file %s in archive %s", aifName, archiveName1);
+		return nullptr;
+	}
 }
 
 void RockettEngine::useCLU(CLU *clu) {
 	g_system->getPaletteManager()->setPalette(clu->toPalette(), 0, 256);
+}
+
+void RockettEngine::useTableau(Tableau *tableau) {
+	_tableau = tableau;
 }
 
 } // End of namespace Rockett
