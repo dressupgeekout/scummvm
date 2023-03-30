@@ -33,9 +33,11 @@
 #include "engines/engine.h"
 #include "engines/savestate.h"
 #include "graphics/screen.h"
+#include "audio/audiostream.h"
 
 #include "rockett/clu.h"
 #include "rockett/detection.h"
+#include "rockett/xpk.h"
 
 namespace Rockett {
 
@@ -96,6 +98,10 @@ public:
 		Common::Serializer s(stream, nullptr);
 		return syncGame(s);
 	}
+
+	CLU *requestCLUByName(const char *archiveName1, const char *archiveName2, const char *cluName);
+	XPK *requestXPKByName(const char *archiveName1, const char *archiveName2, const char *xpkName);
+	Audio::RewindableAudioStream *requestAIFByName(const char *archiveName1, const char *archiveName2, const char *aifName);
 
 	void useCLU(CLU *clu);
 };

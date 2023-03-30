@@ -78,38 +78,32 @@ Common::Error RockettEngine::run() {
 	// background sound
 	//
 	if (getGameId() == Common::String("rockett_newschool")) {
-		PresageArchive *globalArchive = new PresageArchive("GLOBAL.PRD", "GLOBAL.PRS");
-		globalArchive->read();
-
-		if (globalArchive->hasFile("HKEEP.CLU")) {
-			CLU *clu = new CLU();
-			clu->readFromStream(globalArchive->createReadStreamForMember("HKEEP.CLU"));
+		CLU *clu = requestCLUByName("GLOBAL.PRD", "GLOBAL.PRS", "HKEEP.CLU");
+		if (clu) {
 			useCLU(clu);
 			delete clu;
 		} else {
-			warning("couldn't find expected file HKEEP.CLU");
+			return Common::kPathDoesNotExist;
 		}
 
-		if (globalArchive->hasFile("house_01.XPK")) {
-			XPK *xpk = new XPK();
-			xpk->readFromStream(globalArchive->createReadStreamForMember("house_01.XPK"));
+		XPK *xpk = requestXPKByName("GLOBAL.PRD", "GLOBAL.PRS", "house_01.XPK");
+		if (xpk) {
 			Graphics::Surface *bgSurface = xpk->decodeTiledMode();
 			_screen->blitFrom(bgSurface);
 			_screen->update();
 		} else {
-			warning("couldn't find expected file house_01.XPK");
+			return Common::kPathDoesNotExist;
 		}
 
-		if (globalArchive->hasFile("House_amb.AIF")) {
-			Common::SeekableReadStream *houseAmbient = globalArchive->createReadStreamForMember("House_amb.AIF");
-			Audio::RewindableAudioStream *houseAmbientAiff = Audio::makeAIFFStream(houseAmbient, DisposeAfterUse::YES);
-			Audio::LoopingAudioStream *loopingStream = new Audio::LoopingAudioStream(houseAmbientAiff, 0, DisposeAfterUse::YES);
+		Audio::RewindableAudioStream *aiff = requestAIFByName("GLOBAL.PRD", "GLOBAL.PRS", "House_amb.AIF");
+
+		if (aiff) {
+			Audio::LoopingAudioStream *loopingStream = new Audio::LoopingAudioStream(aiff, 0, DisposeAfterUse::YES);
 			Audio::SoundHandle *handle = new Audio::SoundHandle();
-			debug(2, "Playing House_amb.AIF");
 			g_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, handle, loopingStream);
+		} else {
+			return Common::kPathDoesNotExist;
 		}
-
-		delete globalArchive;
 	}
 
 	//
@@ -117,41 +111,31 @@ Common::Error RockettEngine::run() {
 	// Loop' music and load the starting location graphic
 	//
 	if (getGameId() == Common::String("rockett_tricky")) {
-		PresageArchive *idnav = new PresageArchive("IDNav.PRX");
-		idnav->read();
-
-		if (idnav->hasFile("hallLoop_t7.Aif")) {
-			Common::SeekableReadStream *hallLoop = idnav->createReadStreamForMember("hallLoop_t7.Aif");
-			Audio::RewindableAudioStream *hallLoopAiff = Audio::makeAIFFStream(hallLoop, DisposeAfterUse::YES);
-			Audio::LoopingAudioStream *loopingStream = new Audio::LoopingAudioStream(hallLoopAiff, 0, DisposeAfterUse::YES);
+		Audio::RewindableAudioStream *aiff = requestAIFByName("IDNav.PRX", nullptr, "hallLoop_t7.Aif");
+		if (aiff) {
+			Audio::LoopingAudioStream *loopingStream = new Audio::LoopingAudioStream(aiff, 0, DisposeAfterUse::YES);
 			Audio::SoundHandle *handle = new Audio::SoundHandle();
-			debug(2, "Playing hallLoop_t7.Aif");
 			g_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, handle, loopingStream);
+		} else {
+			return Common::kPathDoesNotExist;
 		}
 
-		PresageArchive *idglobal = new PresageArchive("IDGlobal.PRX");
-		idglobal->read();
-
-		CLU *navClu = new CLU;
-		if (idglobal->hasFile("IDPalette.CLU")) {
-			navClu->readFromStream(idglobal->createReadStreamForMember("IDPalette.CLU"));
-			useCLU(navClu);
-			delete navClu;
+		CLU *clu = requestCLUByName("IDGlobal.PRX", nullptr, "IDPalette.CLU");
+		if (clu) {
+			useCLU(clu);
+			delete clu;
+		} else {
+			return Common::kPathDoesNotExist;
 		}
 
-		XPK *xpk = new XPK();
-		if (idnav->hasFile("AN.XPK")) {
-			debug(2, "reading AN.XPK");
-			xpk->readFromStream(idnav->createReadStreamForMember("AN.XPK"));
+		XPK *xpk = requestXPKByName("IDNav.PRX", nullptr, "AN.XPK");
+		if (xpk) {
 			Graphics::Surface *surf = xpk->decodeTiledMode();
 			_screen->blitFrom(surf);
 			_screen->update();
 		} else {
-			debug(2, "No such file 'AN.XPK'");
+			return Common::kPathDoesNotExist;
 		}
-
-		delete idnav;
-		delete idglobal;
 	}
 
 	//
@@ -159,48 +143,31 @@ Common::Error RockettEngine::run() {
 	// the background sound
 	//
 	if (getGameId() == Common::String("rockett_secret")) {
-		PresageArchive *globalArchive = new PresageArchive("GLOBAL.PRX");
-		globalArchive->read();
-
-		if (globalArchive->hasFile("Housekeeping.CLU")) {
-			CLU *clu = new CLU();
-			clu->readFromStream(globalArchive->createReadStreamForMember("Housekeeping.CLU"));
+		CLU *clu = requestCLUByName("GLOBAL.PRX", nullptr, "Housekeeping.CLU");
+		if (clu) {
 			useCLU(clu);
 			delete clu;
 		} else {
-			warning("couldn't find expected file Housekeeping.CLU");
 			return Common::kPathDoesNotExist;
 		}
 
-		if (globalArchive->hasFile("house_01.XPK")) {
-			XPK *xpk = new XPK();
-			xpk->readFromStream(globalArchive->createReadStreamForMember("house_01.XPK"));
+		XPK *xpk = requestXPKByName("GLOBAL.PRX", nullptr, "house_01.XPK");
+		if (xpk) {
 			Graphics::Surface *bgSurface = xpk->decodeTiledMode();
 			_screen->blitFrom(bgSurface);
 			_screen->update();
 		} else {
-			warning("couldn't find expected file house_01.XPK");
 			return Common::kPathDoesNotExist;
 		}
 
-		delete globalArchive;
-
-		PresageArchive *ambientArchive = new PresageArchive("AMBIENT.PRX");
-		ambientArchive->read();
-
-		if (ambientArchive->hasFile("HOUSEKEEPING_AM.Aif")) {
-			Common::SeekableReadStream *housekeeping = ambientArchive->createReadStreamForMember("HOUSEKEEPING_AM.Aif");
-			Audio::RewindableAudioStream *housekeepingAiff = Audio::makeAIFFStream(housekeeping, DisposeAfterUse::YES);
-			Audio::LoopingAudioStream *loopingStream = new Audio::LoopingAudioStream(housekeepingAiff, 0, DisposeAfterUse::YES);
+		Audio::RewindableAudioStream *aiff = requestAIFByName("AMBIENT.PRX", nullptr, "HOUSEKEEPING_AM.Aif");
+		if (aiff) {
+			Audio::LoopingAudioStream *loopingStream = new Audio::LoopingAudioStream(aiff, 0, DisposeAfterUse::YES);
 			Audio::SoundHandle *handle = new Audio::SoundHandle();
-			debug(2, "Playing HOUSEKEEPING_AM.Aif");
 			g_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, handle, loopingStream);
 		} else {
-			warning("couldn't find expected file HOUSEKEEPING_AM.Aif");
 			return Common::kPathDoesNotExist;
 		}
-
-		delete ambientArchive;
 	}
 
 	// Simple event handling loop
@@ -227,6 +194,72 @@ Common::Error RockettEngine::syncGame(Common::Serializer &s) {
 	s.syncAsUint32LE(dummy);
 
 	return Common::kNoError;
+}
+
+CLU *RockettEngine::requestCLUByName(const char *archiveName1, const char *archiveName2, const char *cluName) {
+	debug(2, "Requesting CLU '%s' from archive '%s'", cluName, archiveName1);
+	PresageArchive *archive;
+
+	if (archiveName2) {
+		archive = new PresageArchive(archiveName1, archiveName2);
+	} else {
+		archive = new PresageArchive(archiveName1);
+	}
+	archive->read();
+
+	if (archive->hasFile(cluName)) {
+		CLU *clu = new CLU();
+		clu->readFromStream(archive->createReadStreamForMember(cluName));
+		delete archive;
+		return clu;
+	} else {
+		warning("Couldn't find expected file %s in archive %s", cluName, archiveName1);
+		return nullptr;
+	}
+}
+
+XPK *RockettEngine::requestXPKByName(const char *archiveName1, const char *archiveName2, const char *xpkName) {
+	debug(2, "Requesting XPK '%s' from archive '%s'", xpkName, archiveName1);
+	PresageArchive *archive;
+
+	if (archiveName2) {
+		archive = new PresageArchive(archiveName1, archiveName2);
+	} else {
+		archive = new PresageArchive(archiveName1);
+	}
+	archive->read();
+
+	if (archive->hasFile(xpkName)) {
+		XPK *xpk = new XPK();
+		xpk->readFromStream(archive->createReadStreamForMember(xpkName));
+		delete archive;
+		return xpk;
+	} else {
+		warning("Couldn't find expected file %s in archive %s", xpkName, archiveName1);
+		return nullptr;
+	}
+}
+
+Audio::RewindableAudioStream *RockettEngine::requestAIFByName(const char *archiveName1, const char *archiveName2, const char *aifName) {
+	debug(2, "Requesting AIF '%s' from archive '%s'", aifName, archiveName1);
+	PresageArchive *archive;
+
+	if (archiveName2) {
+		archive = new PresageArchive(archiveName1, archiveName2);
+	} else {
+		archive = new PresageArchive(archiveName1);
+	}
+	archive->read();
+
+	if (archive->hasFile(aifName)) {
+		Common::SeekableReadStream *stream = archive->createReadStreamForMember(aifName);
+		Audio::RewindableAudioStream *aiffStream = Audio::makeAIFFStream(stream, DisposeAfterUse::YES);
+		delete archive;
+		return aiffStream;
+	} else {
+		warning("Couldn't find expected file %s in archive %s", aifName, archiveName1);
+		return nullptr;
+	}
 }
 
 void RockettEngine::useCLU(CLU *clu) {
