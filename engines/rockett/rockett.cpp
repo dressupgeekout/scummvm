@@ -38,6 +38,7 @@
 
 #include "common/file.h"
 
+#include "rockett/choice.h"
 #include "rockett/clu.h"
 #include "rockett/presage_archive.h"
 #include "rockett/tableau.h"
@@ -76,7 +77,8 @@ Common::Error RockettEngine::run() {
 	if (saveSlot != -1)
 		(void)loadGameState(saveSlot);
 
-	Tableau *tableau = new Tableau();
+	//Tableau *tableau = new Tableau();
+	Tableau *tableau = new Choice();
 
 	Graphics::Cursor *cursor = Graphics::makeDefaultWinCursor();
 	CursorMan.replaceCursor(cursor);

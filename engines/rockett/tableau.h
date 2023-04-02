@@ -31,6 +31,15 @@
 
 namespace Rockett {
 
+enum TableauKind {
+	kRockettTableauVanilla,		// default options
+	kRockettTableauEmpty,			// nothing clickable, full-screen video only
+	kRockettTableauMainMenu,	// lots of little clickables in "Housekeeping"
+	kRockettTableauNormal,		// watching the story in ordinary gameplay
+	kRockettTableauChoice,		// Rockett must make a decision, mood-balloons
+	kRockettTableauPlayback,	// TV mode
+};
+
 // A Tableau is a single 'screen' and all of its clickable elements. We
 // don't call it a "Scene" on purpose because that name is already reserved
 // for the main storyline.
