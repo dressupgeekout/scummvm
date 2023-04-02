@@ -182,6 +182,9 @@ Common::Error RockettEngine::run() {
 	while (!shouldQuit()) {
 		while (g_system->getEventManager()->pollEvent(e)) {
 			switch (e.type) {
+			case Common::EVENT_FOCUS_GAINED:
+				_screen->update();
+				break;
 			case Common::EVENT_MOUSEMOVE:
 				_screen->update();
 				break;
