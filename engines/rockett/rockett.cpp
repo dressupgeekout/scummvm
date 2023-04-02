@@ -28,8 +28,10 @@
 #include "common/events.h"
 #include "common/system.h"
 #include "engines/util.h"
+#include "graphics/cursorman.h"
 #include "graphics/palette.h"
 #include "graphics/surface.h"
+#include "graphics/wincursor.h"
 #include "audio/decoders/aiff.h"
 #include "audio/audiostream.h"
 #include "audio/mixer.h"
@@ -73,6 +75,10 @@ Common::Error RockettEngine::run() {
 	int saveSlot = ConfMan.getInt("save_slot");
 	if (saveSlot != -1)
 		(void)loadGameState(saveSlot);
+
+	Graphics::Cursor *cursor = Graphics::makeDefaultWinCursor();
+	CursorMan.replaceCursor(cursor);
+	CursorMan.showMouse(true);
 
 	//
 	// ROCKETT'S NEW SCHOOL: Load the "Housekeeping" main menu and play the
@@ -229,6 +235,16 @@ Common::Error RockettEngine::run() {
 
 	while (!shouldQuit()) {
 		while (g_system->getEventManager()->pollEvent(e)) {
+			switch (e.type) {
+			case Common::EVENT_MOUSEMOVE:
+				_screen->update();
+				break;
+			case Common::EVENT_LBUTTONUP:
+				debug(2, "CLICK (%d, %d)", e.mouse.x, e.mouse.y);
+				break;
+			default:
+				; // OK
+			}
 		}
 
 		// Delay for a bit. All events loops should have a delay
@@ -236,6 +252,7 @@ Common::Error RockettEngine::run() {
 		g_system->delayMillis(10);
 	}
 
+	delete cursor;
 	return Common::kNoError;
 }
 
