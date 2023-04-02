@@ -32,6 +32,8 @@ public:
 	Choice();
 	~Choice();
 
+	void onMouseUp(const Common::Point &pos) override; 
+
 	void draw();
 
 private:

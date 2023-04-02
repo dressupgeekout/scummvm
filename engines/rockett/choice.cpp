@@ -19,6 +19,10 @@
  *
  */
 
+#include "common/rect.h"
+#include "common/system.h"
+
+#include "rockett/rockett.h"
 #include "rockett/choice.h"
 
 namespace Rockett {
@@ -30,6 +34,16 @@ Choice::Choice() {
 Choice::~Choice() {
 	if (_archive)
 		delete _archive;
+}
+
+void Choice::onMouseUp(const Common::Point &pos) {
+	debug(2, "choice onmouseup");
+
+	if (g_engine->getGameId() == Common::String("rockett_tricky")) {
+		Audio::RewindableAudioStream *aiff = g_engine->requestAIFByName("IDL/Whit.PRX", nullptr, "WHI_noteInCan_t.Aif");
+		Audio::SoundHandle *handle = new Audio::SoundHandle();
+		g_system->getMixer()->playStream(Audio::Mixer::kSFXSoundType, handle, aiff);
+	}
 }
 
 void Choice::draw() {

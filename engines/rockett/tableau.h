@@ -46,7 +46,7 @@ enum TableauKind {
 class Tableau {
 public:
 	Tableau();
-	~Tableau();
+	virtual ~Tableau();
 
 	void addBackgroundImage(XPK *xpk);
 
@@ -60,8 +60,8 @@ public:
 	void addSoundLoop(Audio::RewindableAudioStream *stream);
 
 	// Event handlers
-	void onMouseUp(const Common::Point &pos);
-	void onMouseMove(const Common::Point &curPos, const Common::Point &relPos);
+	virtual void onMouseUp(const Common::Point &pos);
+	virtual void onMouseMove(const Common::Point &curPos, const Common::Point &relPos);
 
 private:
 	Graphics::Surface *_bgSurface;
