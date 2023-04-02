@@ -19,6 +19,7 @@
  *
  */
 
+#include "common/debug.h"
 #include "common/system.h"
 #include "graphics/surface.h"
 #include "audio/audiostream.h"
@@ -55,6 +56,16 @@ void Tableau::addSoundLoop(Audio::RewindableAudioStream *stream) {
 	_loopingStream = new Audio::LoopingAudioStream(stream, 0, DisposeAfterUse::YES);
 	_loopingHandle = new Audio::SoundHandle();
 	g_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, _loopingHandle, _loopingStream);
+}
+
+void Tableau::onMouseUp(const Common::Point &pos) {
+	debug(2, "CLICK (%d, %d)", pos.x, pos.y);
+}
+
+void Tableau::onMouseMove(const Common::Point &curPos, const Common::Point &relPos) {
+	Common::Point prevPos;
+	prevPos.x = curPos.x + relPos.x;
+	prevPos.y = curPos.y + relPos.y;
 }
 	
 } // End of namespace Rockett

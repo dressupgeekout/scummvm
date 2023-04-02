@@ -76,6 +76,8 @@ Common::Error RockettEngine::run() {
 	if (saveSlot != -1)
 		(void)loadGameState(saveSlot);
 
+	Tableau *tableau = new Tableau();
+
 	Graphics::Cursor *cursor = Graphics::makeDefaultWinCursor();
 	CursorMan.replaceCursor(cursor);
 	CursorMan.showMouse(true);
@@ -85,8 +87,6 @@ Common::Error RockettEngine::run() {
 	// background sound
 	//
 	if (getGameId() == Common::String("rockett_newschool")) {
-		Tableau *tableau = new Tableau();
-
 		CLU *clu = requestCLUByName("GLOBAL.PRD", "GLOBAL.PRS", "HKEEP.CLU");
 		if (clu) {
 			useCLU(clu);
@@ -115,8 +115,6 @@ Common::Error RockettEngine::run() {
 	// Loop' music and load the starting location graphic
 	//
 	if (getGameId() == Common::String("rockett_tricky")) {
-		Tableau *tableau = new Tableau();
-
 		CLU *clu = requestCLUByName("IDGlobal.PRX", nullptr, "IDPalette.CLU");
 		if (clu) {
 			useCLU(clu);
@@ -145,10 +143,7 @@ Common::Error RockettEngine::run() {
 	// ROCKETT'S SECRET INVITATION: Load the "Housekeeping" main menu and play
 	// the background sound
 	//
-
 	if (getGameId() == Common::String("rockett_secret")) {
-		Tableau *tableau = new Tableau();
-
 		CLU *clu = requestCLUByName("CHOICE4.PRX", nullptr, "MOOD4_PAL.CLU");
 		if (clu) {
 			useCLU(clu);
@@ -237,10 +232,11 @@ Common::Error RockettEngine::run() {
 		while (g_system->getEventManager()->pollEvent(e)) {
 			switch (e.type) {
 			case Common::EVENT_MOUSEMOVE:
+				tableau->onMouseMove(e.mouse, e.relMouse);
 				_screen->update();
 				break;
 			case Common::EVENT_LBUTTONUP:
-				debug(2, "CLICK (%d, %d)", e.mouse.x, e.mouse.y);
+				tableau->onMouseUp(e.mouse);
 				break;
 			default:
 				; // OK
@@ -252,6 +248,7 @@ Common::Error RockettEngine::run() {
 		g_system->delayMillis(10);
 	}
 
+	delete tableau;
 	delete cursor;
 	return Common::kNoError;
 }

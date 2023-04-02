@@ -24,6 +24,7 @@
 
 #include "audio/audiostream.h"
 #include "audio/mixer.h"
+#include "common/rect.h"
 #include "graphics/surface.h"
 
 #include "rockett/xpk.h"
@@ -48,6 +49,10 @@ public:
 	void addHighlightableByID(uint32 normal, uint32 highlighted);
 
 	void addSoundLoop(Audio::RewindableAudioStream *stream);
+
+	// Event handlers
+	void onMouseUp(const Common::Point &pos);
+	void onMouseMove(const Common::Point &curPos, const Common::Point &relPos);
 
 private:
 	Graphics::Surface *_bgSurface;

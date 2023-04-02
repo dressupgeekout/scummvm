@@ -1,6 +1,7 @@
 MODULE := engines/rockett
 
 MODULE_OBJS = \
+	choice.o \
 	clu.o \
 	rockett.o \
 	console.o \
