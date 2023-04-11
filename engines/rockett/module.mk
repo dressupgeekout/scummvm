@@ -5,6 +5,7 @@ MODULE_OBJS = \
 	clu.o \
 	rockett.o \
 	console.o \
+	hallway.o \
 	metaengine.o \
 	presage_archive.o \
 	presage_archive_member.o \
